@@ -52,7 +52,7 @@ export const ListBox = () => {
         getData();
     };
 
-    //delete data from api
+    //delete task from api
     const deleteTask = async (id) => {
         try {
             const response = await fetch(`https://playground.4geeks.com/todo/todos/${id}`, {
@@ -67,6 +67,18 @@ export const ListBox = () => {
         } catch (error) {
             console.log("Error al borrar la tarea");
         }
+    }
+    
+
+    //delete all tasks with deleteTask function
+    const deleteAllTasks = async () => {
+        try{
+            await Promise.all(taskList.map(item => deleteTask(item.id))); 
+            
+        } catch (error) {
+            console.error('error al borrar la lista entera de tareas');
+        }
+        
     }
 
     //event capture value input on changes.
@@ -86,9 +98,7 @@ export const ListBox = () => {
     return (
 
         <div className="card shadow mt-2 rounded-0" style={{ width: `30rem` }}>
-
             <ul className="list-group list-group-flush">
-
                 <input
                     className="list-group-item fw-light"
                     type="text"
@@ -97,7 +107,6 @@ export const ListBox = () => {
                     onKeyDown={onKeyDownInput}
                     placeholder="Añade una nueva tarea"
                 />
-
                 {taskList.map((item) =>
                     <li key={item.id}
                         className="list-group-item bg-light d-flex 
@@ -112,13 +121,20 @@ export const ListBox = () => {
                     </li>
                 )}
             </ul>
-
             <div className="card-footer fw-light textfooter">
                 <b className="fw-normal">
                     {taskList.length ? taskList.length : ""}
                 </b>
                 {!taskList.length ? 'No hay tareas, añadir tareas.' : ' tareas Pendientes'}
+                
             </div>
+            {!taskList.length ? '' : (
+                <button 
+                    className='btn btn-light rounded-0' 
+                    onClick={()=> deleteAllTasks()}
+                    >Borrar Todo
+                </button>
+            )}
         </div>
     )
 }
